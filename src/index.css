@@ -1,0 +1,212 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Unbounded", "Manrope", system-ui, sans-serif;
+  --font-body: "Manrope", "Segoe UI", system-ui, sans-serif;
+
+  --color-pine-950: #0B1D12;
+  --color-pine-900: #12291A;
+  --color-pine-850: #16321F;
+  --color-pine-800: #1C4128;
+  --color-pine-700: #275636;
+  --color-moss-600: #38714A;
+  --color-moss-500: #4C8F5F;
+  --color-moss-400: #6FAE7E;
+  --color-mint-300: #A9CFA2;
+  --color-mint-200: #CDE3C3;
+  --color-paper-50: #F5F7EA;
+  --color-paper-100: #EDF2DF;
+  --color-paper-200: #E2EAD1;
+  --color-honey-300: #F7C268;
+  --color-honey-400: #F2A93B;
+  --color-honey-500: #E8912D;
+  --color-honey-600: #CE7420;
+  --color-lime-350: #C6E86B;
+  --color-lime-400: #B9E05C;
+  --color-lime-500: #9CCB3F;
+  --color-ink-900: #101F16;
+  --color-ink-700: #2C3E33;
+  --color-ink-500: #4A5C50;
+}
+
+html {
+  scroll-behavior: smooth;
+  background: var(--color-pine-950);
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--color-ink-900);
+  overflow-x: hidden;
+}
+
+::selection {
+  background: var(--color-honey-400);
+  color: var(--color-pine-950);
+}
+
+/* ---------- noise grain ---------- */
+.noise-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  pointer-events: none;
+  opacity: 0.055;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+}
+
+/* ---------- scroll reveal ---------- */
+.rv {
+  opacity: 0;
+  transform: translateY(30px);
+  transition:
+    opacity 0.85s ease,
+    transform 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--d, 0s);
+}
+.rv.is-in {
+  opacity: 1;
+  transform: none;
+}
+.rv-left { transform: translateX(-36px); }
+.rv-right { transform: translateX(36px); }
+.rv-left.is-in, .rv-right.is-in { transform: none; }
+
+/* ---------- hero line-mask reveal ---------- */
+.mask-line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+}
+.mask-line > span {
+  display: block;
+  transform: translateY(118%);
+  animation: rise 1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-delay: var(--d, 0s);
+}
+@keyframes rise {
+  to { transform: translateY(0); }
+}
+
+/* ---------- marquee ---------- */
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: mq var(--speed, 30s) linear infinite;
+}
+.marquee:hover .marquee-track { animation-play-state: paused; }
+@keyframes mq {
+  to { transform: translateX(-50%); }
+}
+
+/* ---------- ken burns ---------- */
+.kb { animation: kb 16s ease-in-out infinite alternate; will-change: transform; }
+@keyframes kb {
+  from { transform: scale(1.04) translate(0, 0); }
+  to { transform: scale(1.14) translate(1.6%, -1.8%); }
+}
+
+/* ---------- floaty / drift ---------- */
+.floaty { animation: floaty 5.5s ease-in-out infinite; animation-delay: var(--d, 0s); }
+@keyframes floaty {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-11px); }
+}
+.leaf-drift { animation: leafDrift 13s ease-in-out infinite alternate; animation-delay: var(--d, 0s); }
+@keyframes leafDrift {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  50% { transform: translate(-22px, 26px) rotate(24deg); }
+  100% { transform: translate(14px, 44px) rotate(-14deg); }
+}
+
+.pulse-dot::after {
+  content: "";
+  position: absolute;
+  inset: -5px;
+  border-radius: 9999px;
+  border: 2px solid currentColor;
+  opacity: 0.7;
+  animation: ring 1.8s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+@keyframes ring {
+  0% { transform: scale(0.6); opacity: 0.8; }
+  100% { transform: scale(1.9); opacity: 0; }
+}
+
+/* ---------- accordion ---------- */
+.acc-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.acc-panel.open { grid-template-rows: 1fr; }
+.acc-panel > div { overflow: hidden; }
+
+/* ---------- range slider ---------- */
+input[type="range"].hvo-range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 999px;
+  background: linear-gradient(
+    to right,
+    var(--color-honey-400) 0%,
+    var(--color-honey-400) var(--fill, 50%),
+    #2A4A34 var(--fill, 50%),
+    #2A4A34 100%
+  );
+  outline: none;
+}
+input[type="range"].hvo-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--color-honey-400);
+  border: 4px solid var(--color-pine-950);
+  box-shadow: 0 0 0 2px var(--color-honey-400);
+  cursor: grab;
+  transition: transform 0.2s ease;
+}
+input[type="range"].hvo-range::-webkit-slider-thumb:hover { transform: scale(1.15); }
+input[type="range"].hvo-range::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--color-honey-400);
+  border: 4px solid var(--color-pine-950);
+  box-shadow: 0 0 0 2px var(--color-honey-400);
+  cursor: grab;
+}
+
+/* ---------- scrollbar for review rail ---------- */
+.rail::-webkit-scrollbar { height: 6px; }
+.rail::-webkit-scrollbar-track { background: transparent; }
+.rail::-webkit-scrollbar-thumb { background: var(--color-mint-300); border-radius: 999px; }
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--color-honey-400);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ---------- reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .rv, .rv-left, .rv-right { opacity: 1; transform: none; transition: none; }
+  .mask-line > span { transform: none; animation: none; }
+  .marquee-track { animation: none; flex-wrap: wrap; width: 100%; }
+  .kb, .floaty, .leaf-drift { animation: none; }
+  .pulse-dot::after { animation: none; opacity: 0; }
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
